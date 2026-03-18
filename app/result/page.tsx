@@ -12,11 +12,12 @@ type Props = {
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
   const resolvedParams = await searchParams
   const type = resolvedParams.type as string
+  const name = resolvedParams.name as string
   const primary = archetypes.find(a => a.id === type)
   
   if (primary) {
-    const title = `${primary.name} — My Style Identity`
-    const description = primary.mirrorStatement
+    const title = `${name || "Your"} Style Identity: ${primary.name}`
+    const description = `${name || "My"} style archetype: ${primary.name}. ${primary.mirrorStatement}`
     const image = `/moods/${primary.id.replace(/_/g, '-')}.png`
     
     return {

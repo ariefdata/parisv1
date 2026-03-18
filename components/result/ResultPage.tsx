@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect } from "react"
 import { motion } from "framer-motion"
 import { archetypeVisuals } from "../../lib/archetypeVisuals"
 
@@ -26,6 +27,7 @@ mirrorStatement: string
 reflection: string[]
 styleDirection: string[]
 recommendedBags: Bag[]
+userName?: string | null
 }
 
 type Props = {
@@ -34,33 +36,51 @@ result: Result
 
 export default function ResultPage({ result }: Props) {
 
-const { primary, secondary, mirrorStatement, reflection, styleDirection, recommendedBags } = result
+const { primary, secondary, mirrorStatement, reflection, styleDirection, recommendedBags, userName: name } = result
 const visual = (archetypeVisuals as any)[primary.id] || archetypeVisuals.quiet_muse
 
-function handleShare(){
+useEffect(() => {
+  if (primary) {
+    document.title = `${name || "Your Style"} — ${primary.name} | Paris & Classic`
+    
+    const metaDesc = document.querySelector('meta[name="description"]')
+    if (metaDesc) {
+      metaDesc.setAttribute(
+        "content",
+        `${name || "Someone"} is a ${primary.name}. Discover yours.`
+      )
+    }
 
-const url = window.location.href
+    // Also update OpenGraph title if it exists
+    const ogTitle = document.querySelector('meta[property="og:title"]')
+    if (ogTitle) {
+      ogTitle.setAttribute("content", `${name || "My"} Style Result: ${primary.name}`)
+    }
+  }
+}, [primary, name])
 
-const text = `aku barusan cek style aku di sini...
+  function handleShare() {
+    const url = window.location.href
+
+    const text = `aku barusan cek style aku di sini...
 
 ternyata aku: ${result.primary.name} 🤍
 
 jujur ini akurat banget 😭
 
-coba deh, kamu apa:
-${url}`
+coba deh kamu apa`
 
-if(navigator.share){
-navigator.share({
-title:"My Style Result",
-text
-})
-}else{
-navigator.clipboard.writeText(text)
-alert("Copied to clipboard")
-}
-
-}
+    if (navigator.share) {
+      navigator.share({
+        title: "My Style Result",
+        text,
+        url
+      })
+    } else {
+      navigator.clipboard.writeText(`${text}\n\n${url}`)
+      alert("Copied to clipboard")
+    }
+  }
 
 const base = "#FAF9F7"
 
@@ -91,7 +111,7 @@ className="text-center mb-24"
 >
 
 <p className="text-[10px] tracking-[0.4em] mb-6 uppercase font-bold opacity-50">
-Your Style Energy
+{result.userName ? `${result.userName}, this is your style:` : "Your style:"}
 </p>
 
 <h1 className="text-6xl md:text-7xl font-light tracking-tight mb-4">
@@ -289,6 +309,13 @@ style={{ backgroundColor: 'black' }}
 Share your discovery
 
 </button>
+
+<a
+href="/quiz"
+className="text-sm text-gray-500 underline mt-4 block"
+>
+Try your own style
+</a>
 
 <p className="mt-8 text-[10px] tracking-widest uppercase opacity-30">
 Paris & Classic · Internal Release v1.0

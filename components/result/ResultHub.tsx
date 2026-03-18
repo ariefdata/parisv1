@@ -42,6 +42,7 @@ const dataTimerId = setTimeout(() => {
 try {
 const type = params.get("type")
 const secondaryId = params.get("secondary")
+const name = params.get("name")
 
 const bags:Bag[] = [
 { id:"1", name:"Loria Series", shape:"structured_handbag", structure:"structured", hardware:"gold" },
@@ -62,7 +63,8 @@ secondary,
 mirrorStatement: primary.mirrorStatement,
 reflection: primary.reflection,
 styleDirection: primary.styleDirection,
-recommendedBags
+recommendedBags,
+userName: name
 })
 setLoading(false)
 clearInterval(timerId)
@@ -86,7 +88,10 @@ const style = styleData || "soft"
 
 const resultData = generateResult(answers, style, bags)
 
-setResult(resultData)
+setResult({
+...resultData,
+userName: name
+})
 setLoading(false)
 clearInterval(timerId)
 } catch (error) {

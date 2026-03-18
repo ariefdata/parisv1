@@ -35,7 +35,9 @@ const result = resolveArchetype(answers, option)
 const primary = result.primary?.id
 const secondary = result.secondary?.id
 
-router.push(`/result?type=${primary}&secondary=${secondary}`)
+const name = prompt("masukin nama kamu")
+
+router.push(`/result?type=${primary}&secondary=${secondary}&name=${name || ''}`)
 
 }
 

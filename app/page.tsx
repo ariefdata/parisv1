@@ -2,8 +2,21 @@
 
 import { motion } from "framer-motion"
 import Link from "next/link"
+import { useEffect, useState } from "react"
+import { archetypes } from "../lib/archetypes"
+import { archetypeVisuals } from "../lib/archetypeVisuals"
+
+function getRandomArchetypes() {
+  const shuffled = [...archetypes].sort(() => 0.5 - Math.random())
+  return shuffled.slice(0, 4)
+}
 
 export default function HomePage() {
+  const [preview, setPreview] = useState<any[]>([])
+
+  useEffect(() => {
+    setPreview(getRandomArchetypes())
+  }, [])
 
 return (
 
@@ -54,69 +67,29 @@ Some styles you might discover
 
 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 
-<motion.div
-whileHover={{ y: -8, scale: 1.02 }}
-className="relative rounded-3xl overflow-hidden h-64 shadow-[0_4px_20px_-5px_rgba(0,0,0,0.1)] group transition-all"
->
-<img 
-src="/moods/quiet-muse.png" 
-className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-alt="Quiet Muse"
-/>
-<div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
-<div className="absolute bottom-6 left-6 text-white text-left">
-<p className="font-semibold text-lg mb-1">Quiet Muse</p>
-<p className="text-xs font-light opacity-80">soft minimal energy</p>
-</div>
-</motion.div>
+{preview.map((archetype) => {
+  const visual = (archetypeVisuals as any)[archetype.id]
+  if (!visual) return null
 
-<motion.div
-whileHover={{ y: -8, scale: 1.02 }}
-className="relative rounded-3xl overflow-hidden h-64 shadow-[0_4px_20px_-5px_rgba(0,0,0,0.1)] group transition-all"
->
-<img 
-src="/moods/clean-lines-girl.png" 
-className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-alt="Clean Lines Girl"
-/>
-<div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
-<div className="absolute bottom-6 left-6 text-white text-left">
-<p className="font-semibold text-lg mb-1">Clean Lines Girl</p>
-<p className="text-xs font-light opacity-80">modern minimal style</p>
-</div>
-</motion.div>
-
-<motion.div
-whileHover={{ y: -8, scale: 1.02 }}
-className="relative rounded-3xl overflow-hidden h-64 shadow-[0_4px_20px_-5px_rgba(0,0,0,0.1)] group transition-all"
->
-<img 
-src="/moods/city-lover.png" 
-className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-alt="City Lover"
-/>
-<div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
-<div className="absolute bottom-6 left-6 text-white text-left">
-<p className="font-semibold text-lg mb-1">City Lover</p>
-<p className="text-xs font-light opacity-80">urban romantic vibe</p>
-</div>
-</motion.div>
-
-<motion.div
-whileHover={{ y: -8, scale: 1.02 }}
-className="relative rounded-3xl overflow-hidden h-64 shadow-[0_4px_20px_-5px_rgba(0,0,0,0.1)] group transition-all"
->
-<img 
-src="/moods/soft-rebel-girl.png" 
-className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-alt="Soft Rebel Girl"
-/>
-<div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
-<div className="absolute bottom-6 left-6 text-white text-left">
-<p className="font-semibold text-lg mb-1">Soft Rebel Girl</p>
-<p className="text-xs font-light opacity-80">bold but effortless</p>
-</div>
-</motion.div>
+  return (
+    <motion.div
+      key={archetype.id}
+      whileHover={{ y: -8, scale: 1.02 }}
+      className="relative rounded-3xl overflow-hidden h-64 shadow-[0_4px_20px_-5px_rgba(0,0,0,0.1)] group transition-all"
+    >
+      <img 
+        src={visual.image} 
+        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+        alt={archetype.name}
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+      <div className="absolute bottom-6 left-6 text-white text-left">
+        <p className="font-semibold text-lg mb-1">{archetype.name}</p>
+        <p className="text-xs font-light opacity-80">{archetype.identityHook}</p>
+      </div>
+    </motion.div>
+  )
+})}
 
 </div>
 
