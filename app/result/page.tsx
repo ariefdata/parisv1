@@ -1,12 +1,13 @@
 "use client"
 
 import { useEffect, useState, Suspense } from "react"
-import { useSearchParams, useRouter } from "next/navigation"
+import { useSearchParams } from "next/navigation"
 import { generateResult } from "../../lib/resultGenerator"
 import ResultPage from "../../components/result/ResultPage"
 import { motion, AnimatePresence } from "framer-motion"
 import { archetypes } from "../../lib/archetypes"
 import { matchBagsToArchetype } from "../../lib/productMatcher"
+import Link from "next/link"
 
 type Bag = {
 id: string
@@ -18,7 +19,6 @@ hardware: string
 
 function ResultContent(){
 
-const router = useRouter()
 const params = useSearchParams()
 
 const [loading,setLoading] = useState(true)
@@ -76,7 +76,8 @@ const answersData = localStorage.getItem("quiz_answers")
 const styleData = localStorage.getItem("quiz_style")
 
 if(!answersData && !type){
-router.push("/")
+setLoading(false)
+clearInterval(timerId)
 return
 }
 
@@ -100,7 +101,7 @@ clearInterval(timerId)
 clearTimeout(dataTimerId)
 }
 
-}, [params, messages.length, router])
+}, [params, messages.length])
 
 if(loading){
 
@@ -143,8 +144,14 @@ className="text-lg font-light text-gray-400 tracking-widest uppercase"
 
 if (!result) {
 return (
-<div className="min-h-screen flex items-center justify-center bg-[#faf9f7]">
-<p className="text-gray-500">Something went wrong. Please try taking the quiz again.</p>
+<div className="min-h-screen flex flex-col items-center justify-center bg-[#faf9f7] px-6 text-center">
+<p className="text-gray-400 uppercase tracking-widest text-xs mb-8">No style discovery found</p>
+<Link 
+href="/quiz"
+className="bg-black text-white px-10 py-4 rounded-full text-xs font-bold tracking-[0.2em] uppercase transition-transform hover:scale-105 active:scale-95"
+>
+Take the quiz
+</Link>
 </div>
 )
 }
@@ -155,7 +162,11 @@ return <ResultPage result={result} />
 
 export default function Result() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#faf9f7]" />}>
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#faf9f7] flex items-center justify-center">
+        <div className="h-10 w-10 animate-spin rounded-full border-2 border-solid border-gray-300 border-t-black"></div>
+      </div>
+    }>
       <ResultContent />
     </Suspense>
   )
