@@ -53,8 +53,7 @@ ${url}`
 if(navigator.share){
 navigator.share({
 title:"My Style Result",
-text,
-url
+text
 })
 }else{
 navigator.clipboard.writeText(text)
